@@ -1,1 +1,19 @@
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Server Created - ChunkHost</title>
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-900 text-white flex items-center justify-center h-screen">
+  <div class="bg-gray-800 p-8 rounded-2xl shadow-lg text-center max-w-lg">
+    <h1 class="text-3xl font-bold mb-4">✅ Payment Confirmed!</h1>
+    <p class="mb-2">Your server is ready.</p>
+    <p class="mb-2">Panel URL: <a class="text-blue-400 hover:underline" href="<%= panelLink %>" target="_blank"><%= panelLink %></a></p>
+    <p class="mb-2">Email: <span class="font-semibold"><%= panelEmail %></span></p>
+    <p class="mb-2">Password: <span class="font-semibold"><%= panelPassword %></span></p>
+    <p class="mb-2">Server Name: <span class="font-semibold"><%= serverName %></span></p>
+    <p class="text-gray-400 mt-4">You can now login to your panel and manage your server.</p>
+  </div>
+</body>
+</html>
