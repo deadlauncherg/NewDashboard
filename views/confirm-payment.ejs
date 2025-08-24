@@ -1,1 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Confirm Payment</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-900 text-white flex items-center justify-center h-screen">
+  <div class="bg-gray-800 p-8 rounded-2xl shadow-lg w-full max-w-lg text-center">
+    <% if (status === "pending") { %>
+      <h1 class="text-2xl font-bold mb-4">⏳ Payment Pending</h1>
+      <p class="text-gray-300 mb-4">
+        Kindly wait 5–10 minutes for confirmation. Sometimes it may take longer, but don’t stress or panic.
+      </p>
+      <p class="text-gray-400 mb-4">Your UTR: <%= utr %></p>
+    <% } else if (status === "confirmed") { %>
+      <h1 class="text-2xl font-bold mb-4 text-green-400">✅ Payment Confirmed!</h1>
+      <p class="mb-2">Your server is ready.</p>
+      <p class="mb-2">Panel URL: <a href="<%= panelURL %>" class="text-blue-400 underline"><%= panelURL %></a></p>
+      <p class="mb-2">Email: <%= panelEmail %></p>
+      <p class="mb-2">Password: <%= panelPassword %></p>
+    <% } %>
+  </div>
 
+  <script>
+    // Auto-refresh for pending payments
+    const paymentId = "<%= paymentId %>";
+    const status = "<%= status %>";
+
+    if (status === "pending") {
+      async function checkStatus() {
+        try {
+          const res = await fetch(`/confirm-payment/${paymentId}`);
+          const text = await res.text();
+          // Replace current page content with updated HTML
+          document.body.innerHTML = text;
+        } catch (err) {
+          console.error(err);
+        }
+      }
+
+      setInterval(checkStatus, 5000); // every 5 seconds
+    }
+  </script>
+</body>
+</html>
