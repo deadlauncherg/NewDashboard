@@ -1,7 +1,6 @@
 {
   "sessionSecret": "supersecret",
-
   "discordClientID": "1359111828076232776",
-  "discordClientSecret": "DCEgOAdsPyVczvT8-PBWk4kJIJYnHaXA",
-  "discordCallbackURL": "http://localhost:3000/auth/discord/callback"
+  "discordClientSecret": "9V-_XPnkYRiQ8zjLQBrDookYCHOzBJqI",
+  "discordCallbackPath": "/auth/discord/callback"
 }
