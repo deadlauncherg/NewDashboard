@@ -1,116 +1,113 @@
 const express = require("express");
-const session = require("express-session");
-const bcrypt = require("bcrypt");
-const db = require("./db");
-const passport = require("passport");
-const DiscordStrategy = require("passport-discord").Strategy;
-const settings = require("./settings.json");
+const bodyParser = require("body-parser");
+const path = require("path");
 
 const app = express();
-app.set("view engine", "ejs");
-app.use(express.urlencoded({ extended: true }));
-
-// ---------------- Session ----------------
-app.use(session({
-  secret: settings.sessionSecret || "supersecret",
-  resave: false,
-  saveUninitialized: true
-}));
-
-// ---------------- Passport ----------------
-app.use(passport.initialize());
-app.use(passport.session());
-
-passport.serializeUser((user, done) => {
-  done(null, user.discord_id || user.id);
-});
-
-passport.deserializeUser((id, done) => {
-  db.get("SELECT * FROM users WHERE discord_id = ? OR id = ?", [id, id], (err, row) => {
-    if (err) return done(err);
-    if (row) return done(null, row);
-    return done(null, false);
-  });
-});
-
-// ---------------- Discord Strategy ----------------
-passport.use(new DiscordStrategy({
-  clientID: settings.discordClientID,
-  clientSecret: settings.discordClientSecret,
-  callbackURL: "https://yourcustomdomain.com/discord/callback", // fixed URL
-  scope: ["identify", "email"]
-}, (accessToken, refreshToken, profile, done) => {
-  db.get("SELECT * FROM users WHERE discord_id = ?", [profile.id], (err, row) => {
-    if (row) return done(null, row);
-
-    db.run("INSERT INTO users (username, discord_id) VALUES (?, ?)", [profile.username, profile.id], function(err) {
-      if (err) return done(err);
-      db.get("SELECT * FROM users WHERE discord_id = ?", [profile.id], (err, newUser) => {
-        return done(null, newUser);
-      });
-    });
-  });
-}));
-
-// ---------------- Routes ----------------
-
-// Home
-app.get("/", (req, res) => {
-  res.redirect(req.session.user || req.user ? "/dashboard" : "/login");
-});
-
-// Login/Register
-app.get("/login", (req, res) => res.render("login"));
-app.post("/login", async (req, res) => {
-  const { username, password } = req.body;
-  db.get("SELECT * FROM users WHERE username = ?", [username], async (err, user) => {
-    if (!user) return res.send("Invalid username or password");
-    const match = await bcrypt.compare(password, user.password);
-    if (!match) return res.send("Invalid username or password");
-    req.session.user = { id: user.id, username: user.username };
-    res.redirect("/dashboard");
-  });
-});
-
-app.get("/register", (req, res) => res.render("register"));
-app.post("/register", async (req, res) => {
-  const { username, password } = req.body;
-  const hashed = await bcrypt.hash(password, 10);
-  db.run("INSERT INTO users (username, password) VALUES (?, ?)", [username, hashed], (err) => {
-    if (err) return res.send("Username already exists!");
-    res.redirect("/login");
-  });
-});
-
-// Dashboard
-app.get("/dashboard", (req, res) => {
-  if (!(req.session.user || req.user)) return res.redirect("/login");
-  res.render("dashboard", { user: req.session.user || req.user });
-});
-
-// Logout
-app.get("/logout", (req, res) => {
-  req.session.destroy(() => res.redirect("/login"));
-});
-
-// ---------------- Discord OAuth ----------------
-
-// Redirect user to Discord OAuth
-app.get("/auth/discord", (req, res, next) => {
-  // Save the origin dynamically in session (local, Replit, Codespaces)
-  req.session.origin = req.get("origin") || `${req.protocol}://${req.get("host")}`;
-  passport.authenticate("discord")(req, res, next);
-});
-
-// Callback route (fixed for Discord)
-app.get("/discord/callback", passport.authenticate("discord", { failureRedirect: "/login" }), (req, res) => {
-  req.session.user = { id: req.user.discord_id || req.user.id, username: req.user.username };
-  
-  // Redirect back to the original host
-  const redirectTo = req.session.origin ? `${req.session.origin}/dashboard` : "/dashboard";
-  res.redirect(redirectTo);
-});
-
-// ---------------- Start Server ----------------
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
+// Middleware
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.static("public"));
+app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "views"));
+
+// Fake in-memory DB
+let users = [];
+let payments = [];
+
+// --- Pages ---
+app.get("/", (req, res) => res.redirect("/login"));
+app.get("/login", (req, res) => res.render("login", { error: null }));
+app.get("/register", (req, res) => res.render("register", { error: null }));
+
+// --- Handle login/register ---
+app.post("/login", (req, res) => {
+  const { username, password } = req.body;
+  const user = users.find(u => u.username === username && u.password === password);
+  if (user) res.redirect(`/plans?user=${encodeURIComponent(username)}`);
+  else res.render("login", { error: "Invalid credentials, please try again." });
+});
+
+app.post("/register", (req, res) => {
+  const { username, password } = req.body;
+  if (users.find(u => u.username === username)) return res.render("register", { error: "User exists." });
+  users.push({ username, password });
+  res.redirect("/login");
+});
+
+// --- Plans & Payment pages ---
+app.get("/plans", (req, res) => {
+  const user = req.query.user;
+  if (!user) return res.redirect("/login");
+  res.render("plans", { user });
+});
+
+app.get("/payment", (req, res) => {
+  const { plan, price, user } = req.query;
+  if (!plan || !price || !user) return res.redirect("/plans");
+  res.render("payment", { planName: plan, price, user });
+});
+
+// --- Confirm Payment (user submits UTR) ---
+app.post("/confirm-payment", (req, res) => {
+  const { planName, price, panelEmail, panelPassword, contactEmail, utr, user } = req.body;
+
+  const paymentId = payments.length + 1;
+  payments.push({
+    id: paymentId,
+    user,
+    planName,
+    price,
+    panelEmail,
+    panelPassword,
+    contactEmail,
+    utr,
+    status: "pending"
+  });
+
+  res.render("confirm-payment", { 
+    paymentId,
+    status: "pending",
+    utr,
+    panelEmail,
+    panelPassword,
+    panelURL: "https://cp.chunkhost.site/",
+    user
+  });
+});
+
+// --- Check payment status (user view) ---
+app.get("/confirm-payment/:id", (req, res) => {
+  const payment = payments.find(p => p.id == req.params.id);
+  if (!payment) return res.send("Payment not found");
+
+  res.render("confirm-payment", {
+    paymentId: payment.id,
+    status: payment.status,
+    utr: payment.utr,
+    panelEmail: payment.panelEmail,
+    panelPassword: payment.panelPassword,
+    panelURL: "https://cp.chunkhost.site/",
+    user: payment.user
+  });
+});
+
+// --- Admin confirm page ---
+app.get("/adminconfirm", (req, res) => {
+  const pendingPayments = payments.filter(p => p.status === "pending");
+  res.render("adminconfirm", { pendingPayments });
+});
+
+// --- Admin confirm action ---
+app.post("/adminconfirm/:id", (req, res) => {
+  const payment = payments.find(p => p.id == req.params.id);
+  if (!payment) return res.send("Payment not found");
+
+  // Mark as confirmed
+  payment.status = "confirmed";
+
+  res.redirect("/adminconfirm");
+});
+
+// --- Start server ---
+app.listen(PORT, () => console.log(`🚀 Server running at http://localhost:${PORT}`));
