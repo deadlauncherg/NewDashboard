@@ -1,1 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Confirm Payments</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-900 text-white min-h-screen p-8">
+  <h1 class="text-3xl font-bold mb-6">Pending Payments</h1>
 
+  <% if (pendingPayments.length === 0) { %>
+    <p class="text-gray-400">No pending payments.</p>
+  <% } else { %>
+    <table class="min-w-full bg-gray-800 rounded-lg overflow-hidden shadow-lg">
+      <thead>
+        <tr>
+          <th class="px-4 py-2">ID</th>
+          <th class="px-4 py-2">User</th>
+          <th class="px-4 py-2">Email</th>
+          <th class="px-4 py-2">Password</th>
+          <th class="px-4 py-2">UTR</th>
+          <th class="px-4 py-2">Plan</th>
+          <th class="px-4 py-2">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% pendingPayments.forEach(payment => { %>
+          <tr class="border-t border-gray-700">
+            <td class="px-4 py-2"><%= payment.id %></td>
+            <td class="px-4 py-2"><%= payment.user %></td>
+            <td class="px-4 py-2"><%= payment.panelEmail %></td>
+            <td class="px-4 py-2"><%= payment.panelPassword %></td>
+            <td class="px-4 py-2"><%= payment.utr %></td>
+            <td class="px-4 py-2"><%= payment.planName %></td>
+            <td class="px-4 py-2">
+              <form action="/adminconfirm/<%= payment.id %>" method="POST">
+                <button type="submit" class="bg-green-500 hover:bg-green-600 px-3 py-1 rounded text-black font-bold">
+                  Confirm
+                </button>
+              </form>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  <% } %>
+</body>
+</html>
