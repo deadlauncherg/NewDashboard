@@ -1,1 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Plans - ChunkHost</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-white min-h-screen py-10">
+  <div class="container mx-auto px-4">
+    <h2 class="text-4xl font-bold mb-2 text-center">💎 ChunkHost Paid Plans – High Performance at Low Price! 💎</h2>
+    <p class="text-gray-400 mb-8 text-center">Looking for affordable & powerful servers? 🚀 Start hosting your Minecraft server from just ₹49/month!</p>
+    <p class="text-gray-400 mb-12 text-center">Logged in as: <span class="text-green-400"><%= user %></span></p>
 
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+      <!-- Basic Plan -->
+      <div class="bg-gray-800 p-6 rounded-2xl shadow-lg flex flex-col items-center text-center">
+        <h4 class="text-xl font-bold mb-2">Basic Plan</h4>
+        <p class="text-gray-300 mb-2">2 GB RAM | 100% CPU | 5 GB SSD | Delhi Node</p>
+        <p class="text-green-400 font-semibold mb-4">₹49 / month</p>
+        <form action="/payment" method="GET">
+          <input type="hidden" name="plan" value="Basic">
+          <input type="hidden" name="price" value="49">
+          <input type="hidden" name="user" value="<%= user %>">
+          <button type="submit" class="bg-green-500 hover:bg-green-600 text-black font-bold py-2 px-6 rounded-lg transition duration-200">
+            Buy Now
+          </button>
+        </form>
+      </div>
+
+      <!-- Pro Plan -->
+      <div class="bg-gray-800 p-6 rounded-2xl shadow-lg flex flex-col items-center text-center">
+        <h4 class="text-xl font-bold mb-2">Pro Plan</h4>
+        <p class="text-gray-300 mb-2">4 GB RAM | 150% CPU | 10 GB SSD | Premium Node</p>
+        <p class="text-green-400 font-semibold mb-4">₹99 / month</p>
+        <form action="/payment" method="GET">
+          <input type="hidden" name="plan" value="Pro">
+          <input type="hidden" name="price" value="99">
+          <input type="hidden" name="user" value="<%= user %>">
+          <button type="submit" class="bg-green-500 hover:bg-green-600 text-black font-bold py-2 px-6 rounded-lg transition duration-200">
+            Buy Now
+          </button>
+        </form>
+      </div>
+
+      <!-- Advanced Plan -->
+      <div class="bg-gray-800 p-6 rounded-2xl shadow-lg flex flex-col items-center text-center">
+        <h4 class="text-xl font-bold mb-2">Advanced Plan</h4>
+        <p class="text-gray-300 mb-2">6 GB RAM | 200% CPU | 15 GB SSD | Premium Node</p>
+        <p class="text-green-400 font-semibold mb-4">₹199 / month</p>
+        <form action="/payment" method="GET">
+          <input type="hidden" name="plan" value="Advanced">
+          <input type="hidden" name="price" value="199">
+          <input type="hidden" name="user" value="<%= user %>">
+          <button type="submit" class="bg-green-500 hover:bg-green-600 text-black font-bold py-2 px-6 rounded-lg transition duration-200">
+            Buy Now
+          </button>
+        </form>
+      </div>
+
+      <!-- Ultra Plan -->
+      <div class="bg-gray-800 p-6 rounded-2xl shadow-lg flex flex-col items-center text-center">
+        <h4 class="text-xl font-bold mb-2">Ultra Plan</h4>
+        <p class="text-gray-300 mb-2">8 GB RAM | 250% CPU | 20 GB SSD | Premium Node</p>
+        <p class="text-green-400 font-semibold mb-4">₹299 / month</p>
+        <form action="/payment" method="GET">
+          <input type="hidden" name="plan" value="Ultra">
+          <input type="hidden" name="price" value="299">
+          <input type="hidden" name="user" value="<%= user %>">
+          <button type="submit" class="bg-green-500 hover:bg-green-600 text-black font-bold py-2 px-6 rounded-lg transition duration-200">
+            Buy Now
+          </button>
+        </form>
+      </div>
+
+      <!-- Extreme Plan -->
+      <div class="bg-gray-800 p-6 rounded-2xl shadow-lg flex flex-col items-center text-center">
+        <h4 class="text-xl font-bold mb-2">Extreme Plan</h4>
+        <p class="text-gray-300 mb-2">12 GB RAM | 300% CPU | 30 GB SSD | Premium Node | Priority Support</p>
+        <p class="text-green-400 font-semibold mb-4">₹499 / month</p>
+        <form action="/payment" method="GET">
+          <input type="hidden" name="plan" value="Extreme">
+          <input type="hidden" name="price" value="499">
+          <input type="hidden" name="user" value="<%= user %>">
+          <button type="submit" class="bg-green-500 hover:bg-green-600 text-black font-bold py-2 px-6 rounded-lg transition duration-200">
+            Buy Now
+          </button>
+        </form>
+      </div>
+
+      <!-- Premium Start -->
+      <div class="bg-gray-800 p-6 rounded-2xl shadow-lg flex flex-col items-center text-center">
+        <h4 class="text-xl font-bold mb-2">Premium Start</h4>
+        <p class="text-gray-300 mb-2">4 GB RAM | 150% CPU | 10 GB SSD</p>
+        <p class="text-green-400 font-semibold mb-4">₹149 / month</p>
+        <form action="/payment" method="GET">
+          <input type="hidden" name="plan" value="Premium Start">
+          <input type="hidden" name="price" value="149">
+          <input type="hidden" name="user" value="<%= user %>">
+          <button type="submit" class="bg-green-500 hover:bg-green-600 text-black font-bold py-2 px-6 rounded-lg transition duration-200">
+            Buy Now
+          </button>
+        </form>
+      </div>
+
+      <!-- Premium Plus -->
+      <div class="bg-gray-800 p-6 rounded-2xl shadow-lg flex flex-col items-center text-center">
+        <h4 class="text-xl font-bold mb-2">Premium Plus</h4>
+        <p class="text-gray-300 mb-2">6 GB RAM | 200% CPU | 15 GB SSD</p>
+        <p class="text-green-400 font-semibold mb-4">₹249 / month</p>
+        <form action="/payment" method="GET">
+          <input type="hidden" name="plan" value="Premium Plus">
+          <input type="hidden" name="price" value="249">
+          <input type="hidden" name="user" value="<%= user %>">
+          <button type="submit" class="bg-green-500 hover:bg-green-600 text-black font-bold py-2 px-6 rounded-lg transition duration-200">
+            Buy Now
+          </button>
+        </form>
+      </div>
+
+      <!-- Premium Ultra -->
+      <div class="bg-gray-800 p-6 rounded-2xl shadow-lg flex flex-col items-center text-center">
+        <h4 class="text-xl font-bold mb-2">Premium Ultra</h4>
+        <p class="text-gray-300 mb-2">8 GB RAM | 250% CPU | 20 GB SSD</p>
+        <p class="text-green-400 font-semibold mb-4">₹399 / month</p>
+        <form action="/payment" method="GET">
+          <input type="hidden" name="plan" value="Premium Ultra">
+          <input type="hidden" name="price" value="399">
+          <input type="hidden" name="user" value="<%= user %>">
+          <button type="submit" class="bg-green-500 hover:bg-green-600 text-black font-bold py-2 px-6 rounded-lg transition duration-200">
+            Buy Now
+          </button>
+        </form>
+      </div>
+
+      <!-- Premium Extreme -->
+      <div class="bg-gray-800 p-6 rounded-2xl shadow-lg flex flex-col items-center text-center">
+        <h4 class="text-xl font-bold mb-2">Premium Extreme</h4>
+        <p class="text-gray-300 mb-2">12 GB RAM | 300% CPU | 30 GB SSD | VIP Support Access</p>
+        <p class="text-green-400 font-semibold mb-4">₹699 / month</p>
+        <form action="/payment" method="GET">
+          <input type="hidden" name="plan" value="Premium Extreme">
+          <input type="hidden" name="price" value="699">
+          <input type="hidden" name="user" value="<%= user %>">
+          <button type="submit" class="bg-green-500 hover:bg-green-600 text-black font-bold py-2 px-6 rounded-lg transition duration-200">
+            Buy Now
+          </button>
+        </form>
+      </div>
+
+    </div>
+
+    <div class="text-center mt-12">
+      <a href="/logout" class="text-gray-400 hover:text-green-400 transition duration-200">Logout</a
